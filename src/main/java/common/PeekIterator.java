@@ -86,7 +86,7 @@ public class PeekIterator<T> implements Iterator<T> {
     public void putBack() {
 
         if (this.queueCache.size() > 0) {
-            this.stackPutBack.push(this.queueCache.peekLast());
+            this.stackPutBack.push(this.queueCache.pollLast());
         }
 
     }
