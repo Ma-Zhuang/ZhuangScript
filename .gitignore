@@ -8,6 +8,6 @@
 /httpRequests/
 
 #Comoiled source#
-*.gradle
-*.idea
-*.gitignore
+.gradle/
+.idea/
+.gitignore
