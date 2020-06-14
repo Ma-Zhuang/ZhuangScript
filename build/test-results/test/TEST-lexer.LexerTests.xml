@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lexer.LexerTests" tests="3" skipped="0" failures="0" errors="0" timestamp="2020-06-14T13:57:37" hostname="GENSHUSHU" time="0.034">
+  <properties/>
+  <testcase name="test_deleteComment()" classname="lexer.LexerTests" time="0.029"/>
+  <testcase name="test_function()" classname="lexer.LexerTests" time="0.003"/>
+  <testcase name="test_expression()" classname="lexer.LexerTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
