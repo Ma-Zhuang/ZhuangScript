@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 /**
- * 词法翻译器
+ * 词法分析器
  */
 public class Lexer {
 
