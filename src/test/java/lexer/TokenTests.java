@@ -1,7 +1,6 @@
 package lexer;
 
 import common.PeekIterator;
-import common.PeekIteratorTests;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
