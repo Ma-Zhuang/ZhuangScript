@@ -10,5 +10,5 @@
 #Comoiled source#
 /.gradle/
 /.idea/
-.gitignore
+/.gitignore
 /build/
