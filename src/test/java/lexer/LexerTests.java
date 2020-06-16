@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LexerTests {
 
-    void assertToken(Token token,String value,TokenType tokenType){
-        assertEquals(tokenType,token.getType());
-        assertEquals(value,token.getValue());
+    void assertToken(Token token, String value, TokenType tokenType) {
+        assertEquals(tokenType, token.getType());
+        assertEquals(value, token.getValue());
     }
 
     @Test
@@ -17,7 +17,7 @@ public class LexerTests {
         var source = "(a+b)^100.12==+100-20";
         var tokens = lexer.analyse(source.chars().mapToObj(x -> (char) x));
 
-        assertEquals(11,tokens.size());
+        assertEquals(11, tokens.size());
         assertToken(tokens.get(0), "(", TokenType.BRACKET);
         assertToken(tokens.get(1), "a", TokenType.VARIABLE);
         assertToken(tokens.get(2), "+", TokenType.OPERATOR);
@@ -38,7 +38,7 @@ public class LexerTests {
                 "}\n" +
                 "foo(-100.0, 100)";
         var lexer = new Lexer();
-        var tokens = lexer.analyse(source.chars().mapToObj(x -> (char)x));
+        var tokens = lexer.analyse(source.chars().mapToObj(x -> (char) x));
 
         assertToken(tokens.get(0), "func", TokenType.KEYWORD);
         assertToken(tokens.get(1), "foo", TokenType.VARIABLE);
@@ -67,7 +67,7 @@ public class LexerTests {
     public void test_deleteComment() throws LexicalException {
         var source = "/*123123123\n123123123*/a=1";
         var lexer = new Lexer();
-        var tokens = lexer.analyse(source.chars().mapToObj(x -> (char)x));
+        var tokens = lexer.analyse(source.chars().mapToObj(x -> (char) x));
         assertEquals(3, tokens.size());
     }
 }

@@ -1,4 +1,5 @@
 package lexer;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -16,7 +17,7 @@ public class Keywords {
 
     static HashSet<String> set = new HashSet<>(Arrays.asList(keywords));
 
-    public static boolean isKeywords(String word){
+    public static boolean isKeywords(String word) {
         return set.contains(word);
     }
 }

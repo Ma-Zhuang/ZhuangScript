@@ -46,21 +46,23 @@ public class Lexer {
                 continue;
             }
             //删除注释
-            if (c=='/'){
-                if (lookAhead=='/'){
-                    while(it.hasNext() && (c = it.next()) != '\n') {};
-                }else if (lookAhead=='*'){
+            if (c == '/') {
+                if (lookAhead == '/') {
+                    while (it.hasNext() && (c = it.next()) != '\n') {
+                    }
+                    ;
+                } else if (lookAhead == '*') {
                     it.next();//多读一个* 避免/*/通过
                     boolean valid = false;
-                    while (it.hasNext()){
+                    while (it.hasNext()) {
                         char p = it.next();
-                        if(p == '*' && it.peek() == '/') {
+                        if (p == '*' && it.peek() == '/') {
                             it.next();
-                            valid=true;
+                            valid = true;
                             break;
                         }
                     }
-                    if (!valid){
+                    if (!valid) {
                         throw new LexicalException("comments not match");
                     }
                     continue;
@@ -71,7 +73,7 @@ public class Lexer {
             //+-: 3+5, +8, 3 * -5 3.5
             if ((c == '+' || c == '-' || c == '.') && AlphabetHelper.isNumber(lookAhead)) {
                 var lastToken = tokens.size() == 0 ? null : tokens.get(tokens.size() - 1);
-                if (lastToken==null || !lastToken.isNumber()||lastToken.isOperator()){
+                if (lastToken == null || !lastToken.isNumber() || lastToken.isOperator()) {
                     it.putBack();
                     tokens.add(Token.makeNumber(it));
                     continue;

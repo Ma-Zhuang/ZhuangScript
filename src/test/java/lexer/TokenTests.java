@@ -7,23 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TokenTests {
 
-    void assertToken(Token token,String value,TokenType tokenType){
-        assertEquals(tokenType,token.getType());
-        assertEquals(value,token.getValue());
+    void assertToken(Token token, String value, TokenType tokenType) {
+        assertEquals(tokenType, token.getType());
+        assertEquals(value, token.getValue());
     }
 
     @Test
-    public void test_varOrKeyword(){
-        var it1 = new PeekIterator<Character>("if abc".chars().mapToObj(x->(char)x));
-        var it2 = new PeekIterator<Character>("true abc".chars().mapToObj(x->(char)x));
+    public void test_varOrKeyword() {
+        var it1 = new PeekIterator<Character>("if abc".chars().mapToObj(x -> (char) x));
+        var it2 = new PeekIterator<Character>("true abc".chars().mapToObj(x -> (char) x));
         var token1 = Token.makeVarOrKeyword(it1);
         var token2 = Token.makeVarOrKeyword(it2);
 
-        assertToken(token1,"if",TokenType.KEYWORD);
-        assertToken(token2,"true",TokenType.BOOLEAN);
+        assertToken(token1, "if", TokenType.KEYWORD);
+        assertToken(token2, "true", TokenType.BOOLEAN);
         it1.next();
         var token3 = Token.makeVarOrKeyword(it1);
-        assertToken(token3,"abc",TokenType.VARIABLE);
+        assertToken(token3, "abc", TokenType.VARIABLE);
     }
 
     @Test
@@ -34,9 +34,9 @@ public class TokenTests {
         };
 
         for (String test : tests) {
-            var it = new PeekIterator<Character>(test.chars().mapToObj(x->(char)x));
+            var it = new PeekIterator<Character>(test.chars().mapToObj(x -> (char) x));
             var token = Token.makeString(it);
-            assertToken(token,test,TokenType.STRING);
+            assertToken(token, test, TokenType.STRING);
         }
     }
 
@@ -57,9 +57,9 @@ public class TokenTests {
         String[] results = {"+", "++", "/=", "==", "&=", "&", "||", "^=", "%"};
 
         int i = 0;
-        for(String test:tests) {
+        for (String test : tests) {
 
-            var it = new PeekIterator<Character>(test.chars().mapToObj(x -> (char)x));
+            var it = new PeekIterator<Character>(test.chars().mapToObj(x -> (char) x));
             var token = Token.makeOp(it);
             assertToken(token, results[i++], TokenType.OPERATOR);
         }
@@ -76,8 +76,8 @@ public class TokenTests {
                 "-1000.123123*123123",
         };
 
-        for(String test:tests) {
-            var it = new PeekIterator<Character>(test.chars().mapToObj(x -> (char)x));
+        for (String test : tests) {
+            var it = new PeekIterator<Character>(test.chars().mapToObj(x -> (char) x));
             var token = Token.makeNumber(it);
             var splitValue = test.split("[* ]+");
             assertToken(token, splitValue[0],

@@ -1,4 +1,4 @@
-package parser;
+package parser.ast;
 
 public enum ASTNodeTypes {
     /**
@@ -6,7 +6,7 @@ public enum ASTNodeTypes {
      */
     BLOCK,
     /**
-     *二项表达式
+     * 二项表达式
      */
     BINARY_EXPR, //1+1
     /**

@@ -52,7 +52,7 @@ public class PeekIterator<T> implements Iterator<T> {
         } else {
             if (!it.hasNext()) {
                 T tmp = _endToken;
-                _endToken=null;
+                _endToken = null;
                 return tmp;
             }
             val = it.next();
