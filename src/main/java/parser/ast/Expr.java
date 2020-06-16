@@ -40,45 +40,47 @@ public class Expr extends ASTNode {
         } else {
             return race(
                     iterator,
-                    () -> combine(parent, iterator, () -> U(parent,iterator), () -> E_(parent, k, iterator)),
-                    () -> combine(parent, iterator, () -> F(parent,iterator), () -> E_(parent, k, iterator))
+                    () -> combine(parent, iterator, () -> U(parent, iterator), () -> E_(parent, k, iterator)),
+                    () -> combine(parent, iterator, () -> F(parent, iterator), () -> E_(parent, k, iterator))
             );
         }
     }
 
     /**
      * 一元表达式
+     *
      * @return
      */
-    private static ASTNode U(ASTNode parent,PeekTokenIterator iterator) throws ParseException {
+    private static ASTNode U(ASTNode parent, PeekTokenIterator iterator) throws ParseException {
         var token = iterator.peek();
         var value = token.getValue();
 
-        if (value.equals("(")){
+        if (value.equals("(")) {
             iterator.nextMatch("(");
-            var expr = E(parent,0,iterator);
+            var expr = E(parent, 0, iterator);
             iterator.nextMatch(")");
             return expr;
-        }else if (value.equals("++")||value.equals("--")||value.equals("!")){
+        } else if (value.equals("++") || value.equals("--") || value.equals("!")) {
             var t = iterator.peek();
             iterator.nextMatch(value);
-            Expr unaryExpr = new Expr(parent,ASTNodeTypes.UNARY_EXPR,t);
-            unaryExpr.addChile(E(unaryExpr,0,iterator));
+            Expr unaryExpr = new Expr(parent, ASTNodeTypes.UNARY_EXPR, t);
+            unaryExpr.addChile(E(unaryExpr, 0, iterator));
             return unaryExpr;
         }
         return null;
     }
 
     /**
-     *因子
+     * 因子
+     *
      * @return
      */
-    private static ASTNode F(ASTNode parent,PeekTokenIterator iterator) {
+    private static ASTNode F(ASTNode parent, PeekTokenIterator iterator) {
         var token = iterator.peek();
-        if (token.isVariable()){
-            return new Variable(parent,iterator);
-        }else {
-            return new Scalar(parent,iterator);
+        if (token.isVariable()) {
+            return new Variable(parent, iterator);
+        } else {
+            return new Scalar(parent, iterator);
         }
     }
 
@@ -86,11 +88,11 @@ public class Expr extends ASTNode {
         var token = iterator.peek();
         var value = token.getValue();
 
-        if (table.get(k).indexOf(value)!=-1){
-            var expr = new Expr(parent,ASTNodeTypes.BINARY_EXPR,iterator.nextMatch(value));
-            expr.addChile(combine(parent,iterator,
-                    () -> E(parent,k+1,iterator),
-                    () -> E_(parent,k,iterator)
+        if (table.get(k).indexOf(value) != -1) {
+            var expr = new Expr(parent, ASTNodeTypes.BINARY_EXPR, iterator.nextMatch(value));
+            expr.addChile(combine(parent, iterator,
+                    () -> E(parent, k + 1, iterator),
+                    () -> E_(parent, k, iterator)
             ));
             return expr;
         }
@@ -103,11 +105,11 @@ public class Expr extends ASTNode {
             return iterator.hasNext() ? bFunc.hoc() : null;
         }
         var b = iterator.hasNext() ? bFunc.hoc() : null;
-        if (a == null) {
+        if (b == null) {
             return a;
         }
 
-        Expr expr = new Expr(parent,ASTNodeTypes.BINARY_EXPR,b.lexeme);
+        Expr expr = new Expr(parent, ASTNodeTypes.BINARY_EXPR, b.lexeme);
 //        expr.type = ASTNodeTypes.BINARY_EXPR;
 //        expr.lexeme = b.lexeme;
 //        expr.label = b.label;
@@ -116,14 +118,18 @@ public class Expr extends ASTNode {
         return expr;
     }
 
-    private static ASTNode race(PeekTokenIterator iterator,ExprHOF aFunc, ExprHOF bFunc) throws ParseException {
-        if ((!iterator.hasNext())){
+    private static ASTNode race(PeekTokenIterator iterator, ExprHOF aFunc, ExprHOF bFunc) throws ParseException {
+        if ((!iterator.hasNext())) {
             return null;
         }
         var a = aFunc.hoc();
-        if (a!=null){
+        if (a != null) {
             return a;
         }
         return bFunc.hoc();
+    }
+
+    public static ASTNode parse(PeekTokenIterator tokenIt) throws ParseException {
+        return E(null, 0, tokenIt);
     }
 }
