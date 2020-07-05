@@ -3,19 +3,17 @@ package parser.ast;
 import parser.util.ParseException;
 import parser.util.PeekTokenIterator;
 
-public class Block extends Stmt {
-    public Block() {
-        super(ASTNodeTypes.BLOCK, "BLOCK");
-    }
+public class Program extends Block {
 
+    public Program() {
+        super();
+    }
     public static ASTNode parse(PeekTokenIterator iterator) throws ParseException {
-        iterator.nextMatch("{");
-        var block = new Block();
+        var program = new Program();
         ASTNode stmt = null;
         while ((stmt = Stmt.parseStmt(iterator))!=null){
-            block.addChile(stmt);
+            program.addChile(stmt);
         }
-        iterator.nextMatch("}");
-        return block;
+        return program;
     }
 }

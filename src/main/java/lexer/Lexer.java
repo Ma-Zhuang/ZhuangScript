@@ -3,7 +3,9 @@ package lexer;
 import common.AlphabetHelper;
 import common.PeekIterator;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 /**
@@ -11,9 +13,13 @@ import java.util.stream.Stream;
  */
 public class Lexer {
 
-    public ArrayList<Token> analyse(Stream source) throws LexicalException {
+    public ArrayList<Token> analyse(Stream source)throws LexicalException{
+        var it = new PeekIterator<Character>(source,(char)0);
+        return this.analyse(it);
+    }
+
+    public ArrayList<Token> analyse(PeekIterator<Character> it) throws LexicalException {
         var tokens = new ArrayList<Token>();
-        var it = new PeekIterator<Character>(source, (char) 0);
         while (it.hasNext()) {
             char c = it.next();
             if (c == 0) {
@@ -22,6 +28,29 @@ public class Lexer {
             char lookAhead = it.peek();
             if (c == ' ' || c == '\n') {
                 continue;
+            }
+
+            //删除注释
+            if (c == '/') {
+                if (lookAhead == '/') {
+                    while (it.hasNext() && (c = it.next()) != '\n') {}
+                    continue;
+                } else if (lookAhead == '*') {
+                    it.next();//多读一个* 避免/*/通过
+                    boolean valid = false;
+                    while (it.hasNext()) {
+                        char p = it.next();
+                        if (p == '*' && it.peek() == '/') {
+                            it.next();
+                            valid = true;
+                            break;
+                        }
+                    }
+                    if (!valid) {
+                        throw new LexicalException("comments not match");
+                    }
+                    continue;
+                }
             }
 
             if (c == '{' || c == '}' || c == '(' || c == ')') {
@@ -45,35 +74,12 @@ public class Lexer {
                 tokens.add(Token.makeNumber(it));
                 continue;
             }
-            //删除注释
-            if (c == '/') {
-                if (lookAhead == '/') {
-                    while (it.hasNext() && (c = it.next()) != '\n') {
-                    }
-                    ;
-                } else if (lookAhead == '*') {
-                    it.next();//多读一个* 避免/*/通过
-                    boolean valid = false;
-                    while (it.hasNext()) {
-                        char p = it.next();
-                        if (p == '*' && it.peek() == '/') {
-                            it.next();
-                            valid = true;
-                            break;
-                        }
-                    }
-                    if (!valid) {
-                        throw new LexicalException("comments not match");
-                    }
-                    continue;
-                }
-            }
 
             //+ - .
             //+-: 3+5, +8, 3 * -5 3.5
             if ((c == '+' || c == '-' || c == '.') && AlphabetHelper.isNumber(lookAhead)) {
                 var lastToken = tokens.size() == 0 ? null : tokens.get(tokens.size() - 1);
-                if (lastToken == null || !lastToken.isNumber() || lastToken.isOperator()) {
+                if (lastToken == null || !lastToken.isValue() || lastToken.isOperator()) {
                     it.putBack();
                     tokens.add(Token.makeNumber(it));
                     continue;
@@ -89,5 +95,62 @@ public class Lexer {
 
         }
         return tokens;
+    }
+
+    /**
+     * 从源代码文件加载并解析
+     * @param src
+     * @return
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     * @throws LexicalException
+     */
+    public static ArrayList<Token> fromFile(String src) throws FileNotFoundException, UnsupportedEncodingException, LexicalException {
+        var file = new File(src);
+        var fileStream = new FileInputStream(file);
+        var inputStreamReader = new InputStreamReader(fileStream, "UTF-8");
+
+        var br = new BufferedReader(inputStreamReader);
+
+
+        /**
+         * 利用BufferedReader每次读取一行
+         */
+        var it = new Iterator<Character>() {
+            private String line = null;
+            private int cursor = 0;
+
+            private void readLine() throws IOException {
+                if(line == null || cursor == line.length()) {
+                    line = br.readLine();
+                    cursor = 0;
+                }
+            }
+            @Override
+            public boolean hasNext() {
+                try {
+                    readLine();
+                    return line != null;
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+
+            @Override
+            public Character next() {
+                try {
+                    readLine();
+                    return line != null ? line.charAt(cursor++) :null;
+                } catch (IOException e) {
+                    return null;
+                }
+            }
+        };
+
+        var peekIt = new PeekIterator<Character>(it, '\0');
+
+        var lexer = new Lexer();
+        return lexer.analyse(peekIt);
+
     }
 }

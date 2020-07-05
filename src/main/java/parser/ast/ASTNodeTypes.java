@@ -44,5 +44,10 @@ public enum ASTNodeTypes {
     /**
      * 声明语句
      */
-    DECLARE_STMT
+    DECLARE_STMT,
+    /**
+     * 返回语句
+     */
+    RETURN_STMT,
+    CALL_EXPR
 }

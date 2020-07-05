@@ -1,10 +1,11 @@
 package parser.ast;
 
-import parser.util.PeekTokenIterator;
+import lexer.Token;
 
 public class Scalar extends Factor {
 
-    public Scalar(ASTNode _parent, PeekTokenIterator iterator) {
-        super(_parent, iterator);
+    public Scalar(Token token) {
+        super(token);
+        this.type = ASTNodeTypes.SCALAR;
     }
 }

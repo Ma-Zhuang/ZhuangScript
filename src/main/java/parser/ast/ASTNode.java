@@ -4,6 +4,7 @@ import lexer.Token;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class ASTNode {
@@ -21,15 +22,14 @@ public abstract class ASTNode {
     protected String label;//备注（标签）
     protected ASTNodeTypes type;//类型
 
-    public ASTNode(ASTNode _parent) {
-        this.parent = _parent;
-    }
+    private HashMap<String,Object> _props = new HashMap<>();
 
-    public ASTNode(ASTNode _parent, ASTNodeTypes _type, String _label) {
-        this.parent = _parent;
+    public ASTNode(ASTNodeTypes _type, String _label) {
         this.type = _type;
         this.label = _label;
     }
+
+    public ASTNode() {}
 
     public ASTNode getChild(int index) {
         if (index >= this.children.size()) {
